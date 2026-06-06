@@ -1,0 +1,46 @@
+##############################################################################
+# FastCarPlay - Raspberry Pi 5 example configuration
+# Dongle: Magic Communication Tec. Auto Box (VID 0x1314 / PID 0x1520)
+# Tested: Pi 5 8GB, Raspberry Pi OS (Debian trixie), labwc Wayland
+##############################################################################
+
+# --- Dongle (Magic Communication / Carlinkit compatible) ---
+vendor-id = 4884
+product-id = 5408
+
+# --- Resolution & FPS ---
+width = 800
+height = 640
+source-fps = 20
+
+# --- Display: fullscreen in desktop session ---
+window-mode = 1
+cursor = false
+
+# --- Logging (set to 2 for debugging, 1 for production) ---
+log-level = 1
+
+##############################################################################
+# Device settings
+##############################################################################
+left-hand-drive = true
+night-mode = 2
+wifi-5 = true
+mic-type = 3
+weak-charge = false
+autoconnect = true
+
+##############################################################################
+# Performance - Pi 5 notes
+# Pi 5 does NOT expose H.264 via V4L2 m2m (h264_v4l2m2m has no valid device)
+# Software decode on Pi 5's Cortex-A76 cores is fast enough at 20fps 800x640
+##############################################################################
+hw-decode = false
+decode-low-delay = true
+decode-fast = true
+vsync = false
+rendering-buffer = 3
+draw-skip-events = 2
+aspect-correction = 1
+audio-driver = pipewire
+renderer-driver = opengles2
