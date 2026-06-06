@@ -1,18 +1,10 @@
 #!/bin/bash
-# FastCarPlay smart launcher for Raspberry Pi
-#
+# FastCarPlay smart launcher
 # - Auto-restarts if the app crashes (ran < 30 seconds)
-# - Stays closed if you manually exit (ran >= 30 seconds)
-#
-# Usage: place this in labwc autostart:
-#   sleep 3 && /path/to/scripts/launch-fastcarplay.sh &
-#
-# Or run manually:
-#   DISPLAY=:0 XDG_RUNTIME_DIR=/run/user/1000 ./scripts/launch-fastcarplay.sh
+# - Stays closed if you tap the X button / exit manually (ran >= 30 seconds)
 
-SCRIPT_DIR=$(cd "$(dirname "$0")" && pwd)
-APP="${SCRIPT_DIR}/../out/app"
-CONF="${SCRIPT_DIR}/../conf/settings.txt"
+APP=/home/ychamare/FastCarPlay/out/app
+CONF=/home/ychamare/FastCarPlay/conf/settings.txt
 LOG=/tmp/fastcarplay-restarts.log
 
 log() { echo "$(date '+%H:%M:%S'): $*" >> "$LOG"; }
@@ -26,10 +18,9 @@ while true; do
 
     if [ $runtime -lt 30 ]; then
         log "Crash after ${runtime}s (code $code), retrying in 3s..."
-        sleep 3
-        continue
+        sleep 3; continue
     fi
 
-    log "Clean exit after ${runtime}s, staying closed"
+    log "Closed after ${runtime}s, staying closed"
     break
 done
