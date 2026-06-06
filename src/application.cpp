@@ -330,6 +330,25 @@ bool Application::processFrameEvents(AtomicQueue<Message> &queue, Renderer &rend
         }
     }
 
+    // Check exit button tap (top-right corner, 60x60 + 8px margin)
+    // Must tap and release inside the button area to avoid accidental quits
+    if (downX >= 0 && upX >= 0)
+    {
+        int btnSize = 60;
+        int margin  = 8;
+        int btnX    = _width  - btnSize - margin;
+        int btnY    = margin;
+        auto inBtn  = [&](int x, int y) {
+            return x >= btnX && x <= btnX + btnSize &&
+                   y >= btnY && y <= btnY + btnSize;
+        };
+        if (inBtn(downX, downY) && inBtn(upX, upY))
+        {
+            _active = false;
+            return true;
+        }
+    }
+
     if (_state.frameRendered && (downX >= 0 || upX >= 0 || motion))
     {
         if (downX >= 0)
