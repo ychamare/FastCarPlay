@@ -30,6 +30,8 @@ private:
         int8_t latestState = PROTOCOL_STATUS_UNKNOWN;
         uint32_t showToast = false;
         std::string toast = "";
+        bool holding = false;
+        Uint32 holdStart = 0;
     };
 
     bool setAudioDriver();

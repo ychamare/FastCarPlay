@@ -18,7 +18,6 @@ public:
 private:
     void drawDebug();
     void drawToast();
-    void drawExitButton();
 
     int _state;
     bool _debug;
@@ -29,8 +28,6 @@ private:
     RendererImage _mainImage;
     std::string _debugText;
     std::string _toastText;
-    RendererText _textExit;
-    static constexpr int EXIT_BTN = 60;
 };
 
 #endif /* SRC_INTERFACE */

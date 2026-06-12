@@ -186,6 +186,19 @@ bool Application::processSystemEvent(const SDL_Event &e)
         return true;
     }
 
+    if (e.type == SDL_MOUSEBUTTONDOWN)
+    {
+        _state.holding = true;
+        _state.holdStart = SDL_GetTicks();
+        return false;
+    }
+
+    if (e.type == SDL_MOUSEBUTTONUP)
+    {
+        _state.holding = false;
+        return false;
+    }
+
     if (e.type == SDL_KEYDOWN)
     {
         switch (e.key.keysym.sym)
@@ -327,25 +340,6 @@ bool Application::processFrameEvents(AtomicQueue<Message> &queue, Renderer &rend
             }
             break;
         }
-        }
-    }
-
-    // Check exit button tap (top-right corner, 60x60 + 8px margin)
-    // Must tap and release inside the button area to avoid accidental quits
-    if (downX >= 0 && upX >= 0)
-    {
-        int btnSize = 60;
-        int margin  = 8;
-        int btnX    = _width  - btnSize - margin;
-        int btnY    = margin;
-        auto inBtn  = [&](int x, int y) {
-            return x >= btnX && x <= btnX + btnSize &&
-                   y >= btnY && y <= btnY + btnSize;
-        };
-        if (inBtn(downX, downY) && inBtn(upX, upY))
-        {
-            _active = false;
-            return true;
         }
     }
 
@@ -528,6 +522,13 @@ void Application::loop()
             interface.debug(debugBuffer);
         }
 #endif
+
+        // Long-press anywhere for 3 seconds exits the app
+        if (_state.holding && SDL_GetTicks() - _state.holdStart >= 3000)
+        {
+            _active = false;
+            _state.holding = false;
+        }
 
         std::chrono::steady_clock::time_point now = std::chrono::steady_clock::now();
         frameTime = (int32_t)std::chrono::duration_cast<std::chrono::microseconds>(now - frameStart).count();

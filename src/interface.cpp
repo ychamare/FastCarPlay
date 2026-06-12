@@ -13,7 +13,6 @@ Interface::Interface(SDL_Renderer *renderer)
       _textStatus(font, font_len, Settings::fontSize),
       _textDebug(font, font_len, 16),
       _textToast(font, font_len, Settings::fontSize*0.75),
-      _textExit(font, font_len, 28),
       _mainImage(background, background_len)
 {
 }
@@ -36,7 +35,6 @@ bool Interface::render(AVFrame *frame)
 
     (this->*_render)(frame);
     SDL_RenderCopy(_renderer, _texture, &_sourceRect, nullptr);
-    drawExitButton();
 
     if (_toast)
         drawToast();
@@ -105,7 +103,6 @@ bool Interface::drawHome(bool force, int state, std::string name)
         _debug = false;
     }
 
-    drawExitButton();
     SDL_RenderPresent(_renderer);
     return true;
 }
@@ -184,29 +181,3 @@ void Interface::drawToast()
     }
 }
 
-void Interface::drawExitButton()
-{
-    int w, h;
-    SDL_GetRendererOutputSize(_renderer, &w, &h);
-
-    // Position: top-right corner with 8px margin
-    SDL_Rect btn = {w - EXIT_BTN - 8, 8, EXIT_BTN, EXIT_BTN};
-
-    // Semi-transparent dark background
-    SDL_SetRenderDrawBlendMode(_renderer, SDL_BLENDMODE_BLEND);
-    SDL_SetRenderDrawColor(_renderer, 20, 20, 20, 180);
-    SDL_RenderFillRect(_renderer, &btn);
-
-    // Subtle border
-    SDL_SetRenderDrawColor(_renderer, 180, 180, 180, 160);
-    SDL_RenderDrawRect(_renderer, &btn);
-
-    // Centre the X text in the button
-    SDL_Color white = {255, 255, 255, 230};
-    if (_textExit.prepare(_renderer, "X", white))
-    {
-        int tx = btn.x + (EXIT_BTN - _textExit.width) / 2;
-        int ty = btn.y + (EXIT_BTN - _textExit.height) / 2;
-        _textExit.draw(_renderer, tx, ty);
-    }
-}
